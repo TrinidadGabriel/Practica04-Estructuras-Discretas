@@ -28,16 +28,36 @@ recorrido (Raiz x izq der) PosOrder = recorrido izq PosOrder ++ recorrido der Po
 
 -------------------- EJERCICIO 5 --------------------
 niveles :: Arbol a -> [[a]]
-niveles = undefined
+niveles ArbolVacio = []
+niveles arbol = nivelesAux [arbol]
+
+nivelesAux :: [Arbol a] -> [[a]]
+nivelesAux [] = []
+nivelesAux nodos = [valor | Raiz valor _ _ <- nodos] : nivelesAux (concatMap obtenerHijos nodos)
+  where
+    obtenerHijos ArbolVacio = []
+    obtenerHijos (Raiz _ izquierda derecha) = [izquierda, derecha]
+
 
 -------------------- EJERCICIO 6 --------------------
-minimo :: Arbol a -> a 
-minimo = undefined
+minimo :: Ord a => Arbol a -> a
+minimo (Raiz valor ArbolVacio _) = valor
+minimo (Raiz _ izquierda _) = minimo izquierda
 
 -------------------- EJERCICIO 7 --------------------
-maximo :: Arbol a -> a 
-maximo = undefined
+maximo :: Ord a => Arbol a -> a
+maximo (Raiz valor ArbolVacio _) = valor
+maximo (Raiz _ _ derecha) = maximo derecha
+
 
 -------------------- EJERCICIO 8 --------------------
-eliminar :: Ord a => Arbol a -> a -> Arbol a 
-eliminar = undefined
+eliminar :: Ord a => Arbol a -> a -> Arbol a
+eliminar ArbolVacio _ = ArbolVacio
+eliminar (Raiz valor izquierda derecha) x
+    | x < valor = Raiz valor (eliminar izquierda x) derecha
+    | x > valor = Raiz valor izquierda (eliminar derecha x)
+    | x == valor = case (izquierda, derecha) of
+        (ArbolVacio, _) -> derecha
+        (_, ArbolVacio) -> izquierda
+        _ -> let nuevoValor = maximo izquierda
+             in Raiz nuevoValor (eliminar izquierda nuevoValor) derecha
