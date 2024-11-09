@@ -29,14 +29,15 @@ recorrido (Raiz x izq der) PosOrder = recorrido izq PosOrder ++ recorrido der Po
 -------------------- EJERCICIO 5 --------------------
 niveles :: Arbol a -> [[a]]
 niveles ArbolVacio = []
-niveles arbol = nivelesAux [arbol]
+niveles (Raiz raiz ArbolVacio ArbolVacio) = [[raiz]]
+niveles (Raiz raiz arbolIzquierdo arbolDerecho) = 
+    [raiz] : combinarNiveles (niveles arbolIzquierdo) (niveles arbolDerecho)
 
-nivelesAux :: [Arbol a] -> [[a]]
-nivelesAux [] = []
-nivelesAux nodos = [valor | Raiz valor _ _ <- nodos] : nivelesAux (concatMap obtenerHijos nodos)
-  where
-    obtenerHijos ArbolVacio = []
-    obtenerHijos (Raiz _ izquierda derecha) = [izquierda, derecha]
+-- Función auxiliar para combinar niveles de dos listas de niveles
+combinarNiveles :: [[a]] -> [[a]] -> [[a]]
+combinarNiveles [] ys = ys
+combinarNiveles xs [] = xs
+combinarNiveles (x:xs) (y:ys) = (x ++ y) : combinarNiveles xs ys
 
 
 -------------------- EJERCICIO 6 --------------------
