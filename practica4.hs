@@ -53,12 +53,18 @@ maximo (Raiz _ _ derecha) = maximo derecha
 
 -------------------- EJERCICIO 8 --------------------
 eliminar :: Ord a => Arbol a -> a -> Arbol a
-eliminar ArbolVacio _ = ArbolVacio
-eliminar (Raiz valor izquierda derecha) x
-    | x < valor = Raiz valor (eliminar izquierda x) derecha
-    | x > valor = Raiz valor izquierda (eliminar derecha x)
-    | x == valor = case (izquierda, derecha) of
-        (ArbolVacio, _) -> derecha
-        (_, ArbolVacio) -> izquierda
-        _ -> let nuevoValor = maximo izquierda
-             in Raiz nuevoValor (eliminar izquierda nuevoValor) derecha
+eliminar ArbolVacio _ = error "No se puede eliminar en un árbol vacío"
+eliminar (Raiz x ArbolVacio arbolDerecho) elemento = 
+    if x == elemento 
+    then arbolDerecho  -- Elimina el nodo y devuelve el subárbol derecho
+    else error "El elemento no existe en el árbol"
+eliminar (Raiz x arbolIzquierdo ArbolVacio) elemento = 
+    if x == elemento 
+    then arbolIzquierdo  -- Elimina el nodo y devuelve el subárbol izquierdo
+    else error "El elemento no existe en el árbol"
+eliminar (Raiz x arbolIzquierdo arbolDerecho) elemento = 
+    if elemento < x 
+    then Raiz x (eliminar arbolIzquierdo elemento) arbolDerecho  -- Buscar en el subárbol izquierdo
+    else if elemento > x 
+    then Raiz x arbolIzquierdo (eliminar arbolDerecho elemento)  -- Buscar en el subárbol derecho
+    else Raiz (minimo arbolDerecho) arbolIzquierdo (eliminar arbolDerecho (minimo arbolDerecho))  
