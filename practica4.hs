@@ -47,7 +47,7 @@ minimo (Raiz _ izquierda _) = minimo izquierda
 
 -------------------- EJERCICIO 7 --------------------
 maximo :: Ord a => Arbol a -> a
-maximo (Raiz valor ArbolVacio _) = valor
+maximo (Raiz valor _ ArbolVacio) = valor
 maximo (Raiz _ _ derecha) = maximo derecha
 
 
